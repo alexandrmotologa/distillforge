@@ -1,0 +1,67 @@
+version: "1"
+project:
+  name: "invoice-entity-extractor"
+  description: "Distill Claude 3.5 Sonnet into Qwen 2.5 1.5B for high-throughput structured invoice parsing"
+
+teacher:
+  provider: "mock"
+  model: "claude-3-5-sonnet"
+  temperature: 0.2
+  max_tokens: 1024
+
+student:
+  base_model: "Qwen/Qwen2.5-1.5B-Instruct"
+  quantization_target: "q4_k_m"
+
+seed_data:
+  file: "./examples/invoice_extractor/data/raw_invoices.jsonl"
+  input_key: "prompt"
+  target_key: "response"
+
+generation:
+  target_dataset_size: 40
+  concurrency: 4
+  evolution_strategies:
+    - name: "in_depth"
+      weight: 0.5
+    - name: "adversarial"
+      weight: 0.5
+  quality_threshold: 0.85
+
+filter:
+  schema_file: "./examples/invoice_extractor/schema.json"
+  dedup_threshold: 0.90
+  min_response_chars: 20
+  max_response_chars: 4000
+
+training:
+  method: "qlora"
+  r: 16
+  lora_alpha: 32
+  learning_rate: 0.0002
+  epochs: 3
+  batch_size: 4
+  gradient_accumulation_steps: 4
+
+evaluation:
+  test_split: 0.2
+  sample_size: 10
+  metrics:
+    - "exact_match"
+    - "schema_adherence"
+    - "latency_p95"
+
+finops:
+  monthly_requests: 500000
+  avg_prompt_tokens: 420
+  avg_completion_tokens: 180
+  teacher_cost_per_m_in: 3.00
+  teacher_cost_per_m_out: 15.00
+  self_hosted_monthly_infra_cost: 95.00
+
+export:
+  formats:
+    - "gguf"
+    - "ollama"
+  ollama_modelfile_path: "./dist/invoice_extractor/Modelfile"
+  output_dir: "./dist/invoice_extractor"

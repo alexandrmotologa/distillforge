@@ -1,0 +1,69 @@
+version: "1"
+project:
+  name: "sql-query-generator"
+  description: "Distill GPT-4o into SmolLM2 1.7B for low-latency internal Text-to-SQL generation"
+
+teacher:
+  provider: "mock"
+  model: "gpt-4o"
+  temperature: 0.2
+  max_tokens: 1024
+
+student:
+  base_model: "HuggingFaceTB/SmolLM2-1.7B-Instruct"
+  quantization_target: "q4_k_m"
+
+seed_data:
+  file: "./examples/sql_generator/data/raw_queries.jsonl"
+  input_key: "prompt"
+  target_key: "response"
+
+generation:
+  target_dataset_size: 40
+  concurrency: 4
+  evolution_strategies:
+    - name: "in_depth"
+      weight: 0.4
+    - name: "adversarial"
+      weight: 0.3
+    - name: "cot"
+      weight: 0.3
+  quality_threshold: 0.85
+
+filter:
+  schema_file: "./examples/sql_generator/schema.json"
+  dedup_threshold: 0.85
+  min_response_chars: 20
+  max_response_chars: 4000
+
+training:
+  method: "qlora"
+  r: 16
+  lora_alpha: 32
+  learning_rate: 0.0002
+  epochs: 3
+  batch_size: 4
+  gradient_accumulation_steps: 4
+
+evaluation:
+  test_split: 0.2
+  sample_size: 10
+  metrics:
+    - "exact_match"
+    - "schema_adherence"
+    - "latency_p95"
+
+finops:
+  monthly_requests: 800000
+  avg_prompt_tokens: 280
+  avg_completion_tokens: 140
+  teacher_cost_per_m_in: 5.00
+  teacher_cost_per_m_out: 15.00
+  self_hosted_monthly_infra_cost: 110.00
+
+export:
+  formats:
+    - "gguf"
+    - "ollama"
+  ollama_modelfile_path: "./dist/sql_generator/Modelfile"
+  output_dir: "./dist/sql_generator"

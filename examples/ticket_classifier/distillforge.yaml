@@ -1,0 +1,70 @@
+version: "1"
+project:
+  name: "ticket-classifier"
+  description: "Distill GPT-4o into Llama-3.2-1B for real-time support ticket categorization"
+
+teacher:
+  provider: "mock" # Set to openai, anthropic, or ollama when real API keys are present
+  model: "gpt-4o"
+  temperature: 0.7
+  max_tokens: 512
+
+student:
+  base_model: "meta-llama/Llama-3.2-1B-Instruct"
+  quantization_target: "q4_k_m"
+
+seed_data:
+  file: "./examples/ticket_classifier/data/raw_tickets.jsonl"
+  input_key: "prompt"
+  target_key: "response"
+
+generation:
+  target_dataset_size: 50
+  concurrency: 4
+  evolution_strategies:
+    - name: "in_depth"
+      weight: 0.4
+    - name: "in_breadth"
+      weight: 0.3
+    - name: "adversarial"
+      weight: 0.3
+  quality_threshold: 0.80
+
+filter:
+  schema_file: "./examples/ticket_classifier/schema.json"
+  dedup_threshold: 0.85
+  min_response_chars: 10
+  max_response_chars: 2000
+
+training:
+  method: "qlora"
+  r: 16
+  lora_alpha: 32
+  learning_rate: 0.0002
+  epochs: 2
+  batch_size: 4
+  gradient_accumulation_steps: 4
+
+evaluation:
+  test_split: 0.2
+  sample_size: 10
+  metrics:
+    - "exact_match"
+    - "schema_adherence"
+    - "latency_p95"
+    - "cost_per_million"
+
+finops:
+  monthly_requests: 1500000
+  avg_prompt_tokens: 180
+  avg_completion_tokens: 65
+  teacher_cost_per_m_in: 5.00
+  teacher_cost_per_m_out: 15.00
+  self_hosted_monthly_infra_cost: 110.00
+
+export:
+  formats:
+    - "gguf"
+    - "ollama"
+  ollama_modelfile_path: "./dist/ticket_classifier/Modelfile"
+  output_dir: "./dist/ticket_classifier"

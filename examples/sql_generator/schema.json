@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SQLQueryGeneration",
+  "type": "object",
+  "required": ["sql_query", "target_tables", "complexity", "explanation"],
+  "properties": {
+    "sql_query": {
+      "type": "string"
+    },
+    "target_tables": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "complexity": {
+      "type": "string",
+      "enum": ["simple", "moderate", "complex"]
+    },
+    "explanation": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

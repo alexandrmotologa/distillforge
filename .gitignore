@@ -1,0 +1,41 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/distillforge
+/distillforge.exe
+
+# SQLite Databases & temporary data
+*.db
+*.db-wal
+*.db-shm
+data/*.jsonl
+!examples/*/data/*.jsonl
+
+# Build & Distribution
+/dist/
+build/
+checkpoints/
+
+# Node & Web
+node_modules/
+web/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.safetensors
+*.bin
+*.gguf
+.venv/
+venv/
+ENV/
+
+# OS and Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
