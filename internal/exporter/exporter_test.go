@@ -79,4 +79,16 @@ func TestPipelineExporterExportModel(t *testing.T) {
 	if !strings.Contains(string(mfContent), "FROM ") {
 		t.Errorf("expected Modelfile to have FROM line, got:\n%s", string(mfContent))
 	}
+
+	// Test Multi-Quantization Benchmarking
+	matrix, err := BenchmarkQuantizations(context.Background(), cfg, checkpointDir, outputDir, []string{"q4_k_m", "q8_0"}, true)
+	if err != nil {
+		t.Fatalf("quantization benchmarking failed: %v", err)
+	}
+	if len(matrix) != 2 {
+		t.Fatalf("expected 2 quantization results, got %d", len(matrix))
+	}
+	if matrix[0].FileSizeMB <= 0 || matrix[1].FileSizeMB <= 0 {
+		t.Fatal("expected positive file sizes in quant matrix")
+	}
 }

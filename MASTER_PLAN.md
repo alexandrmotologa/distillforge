@@ -250,3 +250,21 @@ export:
 ### Task 11: CI workflows and documentation
 - GitHub Actions CI workflow for Go build, tests, and linter.
 - Humanized documentation: `README.md`, `docs/ARCHITECTURE.md`, `docs/CLI_REFERENCE.md`, `docs/FINOPS_GUIDE.md`.
+
+### Task 12: Usability, file ingestion and Human-in-the-Loop (HITL) curation
+- Drag-and-drop file ingestion endpoint (`POST /api/upload`) supporting `.jsonl` and `.csv` seed datasets with schema validation and key discovery.
+- Inline dataset curation in Studio: edit prompt/response pairs, add manual golden seeds, bulk accept/reject, and on-demand re-scoring with LLM-as-a-judge.
+- Split-screen dual streaming playground executing Teacher and Student in parallel with side-by-side token diff and latency comparisons.
+
+### Task 13: Synthetic data diversity and AI research analytics
+- Implement analytics engine computing token length distributions, Type-Token Ratio (TTR) lexical richness, and strategy balance.
+- Add category distribution checks to detect and prevent mode collapse during prompt mutation.
+- Implement training anomaly and loss spike guard detecting divergent loss jumps and perplexity stalls.
+
+### Task 14: Enterprise FinOps executive report and recipe advisor
+- Executive FinOps report generator producing self-contained Markdown and HTML audit reports with latency percentiles (p50, p90, p95, p99), financial ROI, and emissions models.
+- Hardware and distillation recipe advisor recommending optimal LoRA rank `r`, learning rates, batch sizes, and quantization targets based on deployment hardware.
+
+### Task 15: Local OpenAI-compatible serving and multi-quantization benchmarking
+- Build OpenAI-compatible chat completions server (`POST /v1/chat/completions`) and CLI command `distillforge serve` for zero-code client migration.
+- Multi-quantization benchmarking harness comparing `Q4_K_M`, `Q5_K_M`, and `Q8_0` memory footprint, disk size, and token latency.

@@ -98,3 +98,53 @@ distillforge run --config distillforge.yaml
 
 Flags:
 - `--simulation`: Runs mock generation, training, and export for testing.
+
+### distillforge serve
+
+Spins up a lightweight OpenAI-compatible `/v1/chat/completions` and `/v1/models` HTTP API server hosting the distilled model.
+
+```bash
+distillforge serve --port 8080
+```
+
+Flags:
+- `-p, --port int`: Port to listen on (default: `8080`).
+
+### distillforge report
+
+Generates a standalone executive FinOps audit report in Markdown or styled HTML presentation format.
+
+```bash
+distillforge report --format html --output FINOPS_AUDIT_REPORT.html
+```
+
+Flags:
+- `--format string`: Output format: `markdown` or `html` (default: `markdown`).
+- `--job-id string`: ID of the completed distillation job (defaults to latest job).
+- `-o, --output string`: Output file path (default: `FINOPS_AUDIT_REPORT.md`).
+
+### distillforge advise
+
+Inspects your target hardware, dataset size, and task domain to recommend optimal fine-tuning recipes, learning rates, LoRA rank, and quantization targets.
+
+```bash
+distillforge advise --hardware apple_silicon
+```
+
+Flags:
+- `--hardware string`: Hardware target (`apple_silicon`, `gpu_8gb`, `gpu_16gb_24gb`, `cpu`) (default: `apple_silicon`).
+- `--dataset-size int`: Target training dataset size (default: `1000`).
+
+### distillforge benchmark-quants
+
+Evaluates trade-offs across multiple GGUF quantization formats (`q4_k_m`, `q5_k_m`, `q8_0`), comparing memory footprint, latency, and perplexity delta.
+
+```bash
+distillforge benchmark-quants --checkpoint ./checkpoints/best
+```
+
+Flags:
+- `--checkpoint string`: Path to adapter checkpoint (default: `./checkpoints/best`).
+- `-o, --output string`: Output directory for quant variants (default: `./dist/quants`).
+- `--simulation`: Forces simulation mode for environments without native compilers.
+

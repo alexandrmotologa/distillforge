@@ -14,9 +14,10 @@ export default function App() {
   const [currentJob, setCurrentJob] = useState<any>(null)
   const [metrics, setMetrics] = useState<any[]>([])
   const [logs, setLogs] = useState<string[]>([])
-  const [samples] = useState<any[]>([
+  const [samples, setSamples] = useState<any[]>([
     {
       id: 'sample-1',
+      dataset_id: 'default',
       prompt: 'Customer reports fiber optic ONT box has red LOS light after thunderstorm.',
       response: '{"category": "Network Outage", "confidence": 0.98, "requires_escalation": false, "sla_hours": 4}',
       strategy: 'in_depth',
@@ -25,6 +26,7 @@ export default function App() {
     },
     {
       id: 'sample-2',
+      dataset_id: 'default',
       prompt: 'Cancel subscription renewal and refund the $49 charge from yesterday.',
       response: '{"category": "Billing", "confidence": 0.99, "requires_escalation": true, "sla_hours": 2}',
       strategy: 'adversarial',
@@ -33,6 +35,7 @@ export default function App() {
     },
     {
       id: 'sample-3',
+      dataset_id: 'default',
       prompt: 'Forgot 2FA password and switched to a new phone number.',
       response: '{"category": "Authentication", "confidence": 0.97, "requires_escalation": true, "sla_hours": 4}',
       strategy: 'in_breadth',
@@ -41,6 +44,7 @@ export default function App() {
     },
     {
       id: 'sample-4',
+      dataset_id: 'default',
       prompt: 'App crashes immediately on startup on Android 14 after latest update.',
       response: '{"category": "Technical Defect", "confidence": 0.96, "requires_escalation": false, "sla_hours": 8}',
       strategy: 'cot',
@@ -49,8 +53,20 @@ export default function App() {
     },
   ])
 
-  // Fetch initial system status
+  const refreshSamples = () => {
+    fetch('/api/samples?limit=200')
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setSamples(data)
+        }
+      })
+      .catch(() => {})
+  }
+
+  // Fetch initial system status and samples
   useEffect(() => {
+    refreshSamples()
     fetch('/api/jobs')
       .then((res) => (res.ok ? res.json() : []))
       .then((jobs) => {
@@ -180,7 +196,7 @@ export default function App() {
         )}
 
         {activeTab === 'datasets' && (
-          <DatasetInspector samples={samples} />
+          <DatasetInspector samples={samples} onRefreshSamples={refreshSamples} />
         )}
 
         {activeTab === 'diff' && (

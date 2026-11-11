@@ -333,6 +333,129 @@ func (s *Store) InsertSampleBatch(samples []Sample) error {
 	return tx.Commit()
 }
 
+func (s *Store) InsertSample(sm *Sample) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if sm.ID == "" {
+		sm.ID = uuid.New().String()
+	}
+	if sm.CreatedAt.IsZero() {
+		sm.CreatedAt = time.Now().UTC()
+	}
+	acceptedInt := 0
+	if sm.IsAccepted {
+		acceptedInt = 1
+	}
+
+	query := `INSERT INTO samples (id, dataset_id, prompt, response, strategy, judge_score, is_accepted, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+	_, err := s.db.Exec(query, sm.ID, sm.DatasetID, sm.Prompt, sm.Response, sm.Strategy, sm.JudgeScore, acceptedInt, sm.MetadataJSON, sm.CreatedAt)
+	return err
+}
+
+func (s *Store) GetSample(id string) (*Sample, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	sm := &Sample{}
+	var acceptedInt int
+	query := `SELECT id, dataset_id, prompt, response, strategy, judge_score, is_accepted, metadata_json, created_at FROM samples WHERE id = ?`
+	err := s.db.QueryRow(query, id).Scan(
+		&sm.ID, &sm.DatasetID, &sm.Prompt, &sm.Response, &sm.Strategy,
+		&sm.JudgeScore, &acceptedInt, &sm.MetadataJSON, &sm.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+	sm.IsAccepted = (acceptedInt == 1)
+	return sm, nil
+}
+
+func (s *Store) UpdateSample(id, prompt, response string, isAccepted bool, judgeScore float64) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	acceptedInt := 0
+	if isAccepted {
+		acceptedInt = 1
+	}
+
+	query := `UPDATE samples SET prompt = ?, response = ?, is_accepted = ?, judge_score = ? WHERE id = ?`
+	_, err := s.db.Exec(query, prompt, response, acceptedInt, judgeScore, id)
+	return err
+}
+
+func (s *Store) DeleteSample(id string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	_, err := s.db.Exec(`DELETE FROM samples WHERE id = ?`, id)
+	return err
+}
+
+func (s *Store) BulkUpdateSamplesStatus(ids []string, isAccepted bool) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if len(ids) == 0 {
+		return nil
+	}
+
+	acceptedInt := 0
+	if isAccepted {
+		acceptedInt = 1
+	}
+
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	stmt, err := tx.Prepare(`UPDATE samples SET is_accepted = ? WHERE id = ?`)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	for _, id := range ids {
+		if _, err := stmt.Exec(acceptedInt, id); err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit()
+}
+
+func (s *Store) BulkDeleteSamples(ids []string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if len(ids) == 0 {
+		return nil
+	}
+
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	stmt, err := tx.Prepare(`DELETE FROM samples WHERE id = ?`)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	for _, id := range ids {
+		if _, err := stmt.Exec(id); err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit()
+}
+
 func (s *Store) ListSamples(datasetID string, limit, offset int) ([]Sample, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()

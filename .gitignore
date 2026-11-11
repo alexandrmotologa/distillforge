@@ -13,6 +13,10 @@
 *.db-shm
 data/*.jsonl
 !examples/*/data/*.jsonl
+/data/
+/internal/server/data/
+FINOPS_AUDIT_REPORT.*
+/Modelfile
 
 # Build & Distribution
 /dist/

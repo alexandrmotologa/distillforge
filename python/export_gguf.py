@@ -13,7 +13,7 @@ def parse_args():
     parser.add_argument("--checkpoint", type=str, required=True, help="Path to LoRA checkpoint directory")
     parser.add_argument("--base_model", type=str, required=True, help="Base model identifier or path")
     parser.add_argument("--output_file", type=str, required=True, help="Destination GGUF file path")
-    parser.add_argument("--quant", type=str, default="q4_k_m", choices=["q4_k_m", "q8_0", "f16"], help="Quantization type")
+    parser.add_argument("--quant", type=str, default="q4_k_m", choices=["q4_k_m", "q5_k_m", "q8_0", "f16", "q4_0", "q5_0"], help="Quantization type")
     parser.add_argument("--simulation", action="store_true", help="Simulate export if dependencies are missing")
     return parser.parse_args()
 

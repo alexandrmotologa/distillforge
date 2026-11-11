@@ -83,6 +83,43 @@ func TestStoreOperations(t *testing.T) {
 		t.Fatalf("expected 2 samples, got %d (err: %v)", len(fetchedSamples), err)
 	}
 
+	// Test Sample Update and Get
+	sampleToUpdate := fetchedSamples[0]
+	if err := s.UpdateSample(sampleToUpdate.ID, "Updated Prompt", "Updated Response", false, 0.70); err != nil {
+		t.Fatalf("failed to update sample: %v", err)
+	}
+	updatedSample, err := s.GetSample(sampleToUpdate.ID)
+	if err != nil || updatedSample.Prompt != "Updated Prompt" || updatedSample.IsAccepted {
+		t.Fatalf("sample update verification failed: %+v", updatedSample)
+	}
+
+	// Test Bulk Update Status
+	if err := s.BulkUpdateSamplesStatus([]string{sampleToUpdate.ID}, true); err != nil {
+		t.Fatalf("failed bulk status update: %v", err)
+	}
+	rechecked, _ := s.GetSample(sampleToUpdate.ID)
+	if !rechecked.IsAccepted {
+		t.Fatal("expected sample to be accepted after bulk update")
+	}
+
+	// Test Single Sample Insert (Golden Seed)
+	golden := &Sample{
+		DatasetID:  dataset.ID,
+		Prompt:     "Manual golden seed prompt",
+		Response:   "Golden response",
+		Strategy:   "golden",
+		JudgeScore: 1.0,
+		IsAccepted: true,
+	}
+	if err := s.InsertSample(golden); err != nil {
+		t.Fatalf("failed to insert golden seed: %v", err)
+	}
+
+	// Test Sample Delete
+	if err := s.DeleteSample(golden.ID); err != nil {
+		t.Fatalf("failed to delete golden sample: %v", err)
+	}
+
 	// 4. Training Metrics
 	metric := &TrainingMetric{
 		JobID:        job.ID,

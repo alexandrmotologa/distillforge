@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -121,5 +122,131 @@ func TestServerPlaygroundChat(t *testing.T) {
 	}
 	if _, ok := resp["response"]; !ok {
 		t.Fatal("expected 'response' field in playground output")
+	}
+}
+
+func TestServerUploadAndCurationEndpoints(t *testing.T) {
+	srv, st, _ := setupTestServer(t)
+	defer st.Close()
+
+	handler := srv.Routes()
+
+	// 1. Upload test
+	uploadJSON := `{"filename": "test_upload.jsonl", "content": "{\"prompt\":\"Test\",\"response\":\"Answer\"}\n"}`
+	req := httptest.NewRequest("POST", "/api/upload", bytes.NewBufferString(uploadJSON))
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for upload, got %d (body: %s)", rec.Code, rec.Body.String())
+	}
+
+	var uploadResp map[string]any
+	if err := json.Unmarshal(rec.Body.Bytes(), &uploadResp); err != nil {
+		t.Fatalf("failed to parse upload response: %v", err)
+	}
+	if uploadResp["status"] != "success" {
+		t.Fatalf("expected upload success, got %v", uploadResp["status"])
+	}
+
+	// 2. Create Dataset & Sample
+	p, _ := st.SaveProject("curation-project", "testing curation")
+	ds, _ := st.SaveDataset(p.ID, "curated", "data.jsonl", "jsonl", "clean", 1)
+
+	sampleJSON := fmt.Sprintf(`{"dataset_id":"%s","prompt":"Original prompt","response":"Original response","strategy":"golden"}`, ds.ID)
+	req = httptest.NewRequest("POST", "/api/samples", bytes.NewBufferString(sampleJSON))
+	rec = httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusCreated {
+		t.Fatalf("expected 201 Created for sample, got %d", rec.Code)
+	}
+
+	var created store.Sample
+	if err := json.Unmarshal(rec.Body.Bytes(), &created); err != nil {
+		t.Fatalf("failed to unmarshal sample: %v", err)
+	}
+
+	// 3. Update Sample
+	updateJSON := `{"prompt":"Modified prompt","response":"Modified response","is_accepted":true,"judge_score":0.99}`
+	req = httptest.NewRequest("PUT", "/api/samples/"+created.ID, bytes.NewBufferString(updateJSON))
+	rec = httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for update, got %d", rec.Code)
+	}
+
+	// 4. Re-judge Sample
+	req = httptest.NewRequest("POST", "/api/samples/"+created.ID+"/re-judge", nil)
+	rec = httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for re-judge, got %d", rec.Code)
+	}
+
+	// 5. Bulk action
+	bulkJSON := fmt.Sprintf(`{"ids":["%s"],"action":"reject"}`, created.ID)
+	req = httptest.NewRequest("POST", "/api/samples/bulk", bytes.NewBufferString(bulkJSON))
+	rec = httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for bulk, got %d", rec.Code)
+	}
+
+	// 6. Delete Sample
+	req = httptest.NewRequest("DELETE", "/api/samples/"+created.ID, nil)
+	rec = httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for delete, got %d", rec.Code)
+	}
+
+	// 7. OpenAI-compatible /v1/chat/completions
+	openAIReq := `{"model":"test-model","messages":[{"role":"user","content":"Classify ticket 99"}]}`
+	req = httptest.NewRequest("POST", "/v1/chat/completions", bytes.NewBufferString(openAIReq))
+	rec = httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for openai completions, got %d", rec.Code)
+	}
+
+	var chatResp map[string]any
+	if err := json.Unmarshal(rec.Body.Bytes(), &chatResp); err != nil {
+		t.Fatalf("failed to parse openai chat response: %v", err)
+	}
+	if chatResp["object"] != "chat.completion" {
+		t.Errorf("expected object 'chat.completion', got %v", chatResp["object"])
+	}
+
+	// 8. OpenAI-compatible /v1/models
+	req = httptest.NewRequest("GET", "/v1/models", nil)
+	rec = httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for openai models, got %d", rec.Code)
+	}
+
+	// 9. Dataset Analytics Endpoint
+	req = httptest.NewRequest("GET", "/api/datasets/"+ds.ID+"/analytics", nil)
+	rec = httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for dataset analytics, got %d", rec.Code)
+	}
+
+	// 10. Advisor Recommend Endpoint
+	req = httptest.NewRequest("GET", "/api/advisor/recommend?hardware=gpu_8gb&dataset_size=1000", nil)
+	rec = httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for advisor, got %d", rec.Code)
 	}
 }
