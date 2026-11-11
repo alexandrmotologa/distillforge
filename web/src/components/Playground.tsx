@@ -91,24 +91,24 @@ export const Playground: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 rounded-lg bg-slate-950 p-1 border border-slate-800">
+          <div className="flex items-center gap-2 rounded-lg bg-slate-950 p-1 border border-slate-800 flex-shrink-0">
             <button
               onClick={() => setIsDualMode(true)}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium whitespace-nowrap flex-shrink-0 transition-all cursor-pointer ${
                 isDualMode ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <SplitSquareVertical className="w-3.5 h-3.5" />
-              <span>Dual Comparison</span>
+              <SplitSquareVertical className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="whitespace-nowrap">Dual Comparison</span>
             </button>
             <button
               onClick={() => setIsDualMode(false)}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium whitespace-nowrap flex-shrink-0 transition-all cursor-pointer ${
                 !isDualMode ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <ArrowRightLeft className="w-3.5 h-3.5" />
-              <span>Single Model</span>
+              <ArrowRightLeft className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="whitespace-nowrap">Single Model</span>
             </button>
           </div>
         </div>
@@ -157,17 +157,17 @@ export const Playground: React.FC = () => {
           <button
             onClick={handleSend}
             disabled={isLoading}
-            className="flex items-center gap-2 px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all cursor-pointer whitespace-nowrap flex-shrink-0"
           >
             {isLoading ? (
               <>
-                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>Streaming Inference...</span>
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin flex-shrink-0" />
+                <span className="whitespace-nowrap">Streaming Inference...</span>
               </>
             ) : (
               <>
-                <Send className="w-3.5 h-3.5" />
-                <span>{isDualMode ? 'Execute Dual Query' : 'Send to Model'}</span>
+                <Send className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="whitespace-nowrap">{isDualMode ? 'Execute Dual Query' : 'Send to Model'}</span>
               </>
             )}
           </button>

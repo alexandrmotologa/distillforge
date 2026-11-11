@@ -110,20 +110,20 @@ export const ROISummaryCard: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <button
               onClick={() => handleDownloadReport('html')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all cursor-pointer whitespace-nowrap flex-shrink-0"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>Download Executive Report (HTML)</span>
+              <Download className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="whitespace-nowrap">Download Executive Report (HTML)</span>
             </button>
             <button
               onClick={() => handleDownloadReport('md')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition-all cursor-pointer whitespace-nowrap flex-shrink-0"
             >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Markdown</span>
+              <FileText className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="whitespace-nowrap">Markdown</span>
             </button>
           </div>
         </div>

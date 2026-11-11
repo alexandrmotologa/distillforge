@@ -199,10 +199,10 @@ export:
           <p className="text-xs text-slate-400">Configure synthetic data evolution, quality filtering, and LoRA fine-tuning</p>
         </div>
 
-        <div className="flex items-center rounded-lg bg-slate-900 border border-slate-800 p-1">
+        <div className="flex items-center rounded-lg bg-slate-900 border border-slate-800 p-1 flex-shrink-0">
           <button
             onClick={() => setActiveTab('form')}
-            className={`px-3 py-1 rounded text-xs font-medium ${
+            className={`px-3 py-1 rounded text-xs font-medium whitespace-nowrap flex-shrink-0 cursor-pointer ${
               activeTab === 'form' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -210,12 +210,12 @@ export:
           </button>
           <button
             onClick={() => setActiveTab('yaml')}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium ${
+            className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium whitespace-nowrap flex-shrink-0 cursor-pointer ${
               activeTab === 'yaml' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Code2 className="w-3.5 h-3.5" />
-            <span>YAML Preview</span>
+            <Code2 className="w-3.5 h-3.5 flex-shrink-0" />
+            <span className="whitespace-nowrap">YAML Preview</span>
           </button>
         </div>
       </div>
@@ -583,26 +583,26 @@ export:
       )}
 
       {/* Action Bar */}
-      <div className="flex items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-900/80">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-xl border border-slate-800 bg-slate-900/80">
         <div className="flex items-center gap-2 text-xs text-slate-400">
-          <AlertCircle className="w-4 h-4 text-indigo-400" />
+          <AlertCircle className="w-4 h-4 text-indigo-400 flex-shrink-0" />
           <span>Execution runs: Generation → Judge Filter → LoRA Train → Benchmark → GGUF Export</span>
         </div>
 
         <button
           onClick={handleLaunch}
           disabled={isLaunching}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
+          className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all cursor-pointer whitespace-nowrap flex-shrink-0"
         >
           {isLaunching ? (
             <>
-              <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Starting Pipeline...</span>
+              <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin flex-shrink-0" />
+              <span className="whitespace-nowrap">Starting Pipeline...</span>
             </>
           ) : (
             <>
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Launch Distillation Pipeline</span>
+              <Play className="w-3.5 h-3.5 fill-current flex-shrink-0" />
+              <span className="whitespace-nowrap">Launch Distillation Pipeline</span>
             </>
           )}
         </button>

@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 
 	"github.com/alexandrmotologa/distillforge/internal/config"
@@ -58,7 +59,10 @@ func TestGeneratorEndToEnd(t *testing.T) {
 	}
 
 	var progressUpdates []float64
+	var progressMu sync.Mutex
 	samples, err := gen.GenerateDataset(context.Background(), "job-123", outputPath, func(done, total int, pct float64) {
+		progressMu.Lock()
+		defer progressMu.Unlock()
 		progressUpdates = append(progressUpdates, pct)
 	})
 	if err != nil {

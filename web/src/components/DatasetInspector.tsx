@@ -312,23 +312,23 @@ export const DatasetInspector: React.FC<DatasetInspectorProps> = ({ samples: ini
           {/* Add Golden Seed Button */}
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all cursor-pointer whitespace-nowrap flex-shrink-0"
           >
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>+ Add Golden Seed</span>
+            <PlusCircle className="w-3.5 h-3.5 flex-shrink-0" />
+            <span className="whitespace-nowrap">+ Add Golden Seed</span>
           </button>
 
           {/* Analytics Button */}
           <button
             onClick={() => (showAnalytics ? setShowAnalytics(false) : loadAnalytics())}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all whitespace-nowrap flex-shrink-0 cursor-pointer ${
               showAnalytics
                 ? 'bg-violet-600 text-white border-violet-500'
                 : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
             }`}
           >
-            <BarChart3 className="w-3.5 h-3.5" />
-            <span>{showAnalytics ? 'Hide Analytics' : 'Dataset Analytics'}</span>
+            <BarChart3 className="w-3.5 h-3.5 flex-shrink-0" />
+            <span className="whitespace-nowrap">{showAnalytics ? 'Hide Analytics' : 'Dataset Analytics'}</span>
           </button>
 
           {/* Export Button */}
@@ -341,43 +341,43 @@ export const DatasetInspector: React.FC<DatasetInspectorProps> = ({ samples: ini
               a.download = 'distillforge_curated_dataset.json'
               a.click()
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition-all whitespace-nowrap flex-shrink-0 cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export JSON</span>
+            <Download className="w-3.5 h-3.5 flex-shrink-0" />
+            <span className="whitespace-nowrap">Export JSON</span>
           </button>
         </div>
       </div>
 
       {/* Bulk Action Bar (when rows are selected) */}
       {selectedIds.size > 0 && (
-        <div className="flex items-center justify-between p-3 rounded-xl bg-indigo-950/60 border border-indigo-500/40 text-xs text-indigo-200">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-indigo-950/60 border border-indigo-500/40 text-xs text-indigo-200">
+          <div className="flex items-center gap-2 whitespace-nowrap">
             <span className="font-semibold text-white">{selectedIds.size}</span>
             <span>samples selected for batch operation</span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => handleBulkStatus(true)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition-all"
+              className="flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition-all whitespace-nowrap flex-shrink-0 cursor-pointer"
             >
-              <CheckCircle2 className="w-3 h-3" />
-              <span>Accept Selected</span>
+              <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
+              <span className="whitespace-nowrap">Accept Selected</span>
             </button>
             <button
               onClick={() => handleBulkStatus(false)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium transition-all"
+              className="flex items-center gap-1 px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium transition-all whitespace-nowrap flex-shrink-0 cursor-pointer"
             >
-              <XCircle className="w-3 h-3" />
-              <span>Reject Selected</span>
+              <XCircle className="w-3 h-3 flex-shrink-0" />
+              <span className="whitespace-nowrap">Reject Selected</span>
             </button>
             <button
               onClick={handleBulkDelete}
-              className="flex items-center gap-1 px-2.5 py-1 rounded bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium transition-all"
+              className="flex items-center gap-1 px-2.5 py-1 rounded bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium transition-all whitespace-nowrap flex-shrink-0 cursor-pointer"
             >
-              <Trash2 className="w-3 h-3" />
-              <span>Delete Selected</span>
+              <Trash2 className="w-3 h-3 flex-shrink-0" />
+              <span className="whitespace-nowrap">Delete Selected</span>
             </button>
           </div>
         </div>
@@ -514,9 +514,9 @@ export const DatasetInspector: React.FC<DatasetInspectorProps> = ({ samples: ini
                   <td className="py-3 px-4 text-right">
                     <button
                       onClick={() => openInspectModal(sample)}
-                      className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium cursor-pointer"
+                      className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium cursor-pointer whitespace-nowrap flex-shrink-0"
                     >
-                      Inspect / Edit
+                      <span className="whitespace-nowrap">Inspect / Edit</span>
                     </button>
                   </td>
                 </tr>

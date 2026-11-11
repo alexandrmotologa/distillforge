@@ -63,14 +63,14 @@ export const HeadToHeadDiff: React.FC<HeadToHeadDiffProps> = ({ comparisons }) =
             </p>
           </div>
 
-          <div className="flex items-center gap-4 text-xs">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-              <ShieldCheck className="w-4 h-4" />
-              <span className="font-semibold">Exact Match: 98.2%</span>
+          <div className="flex items-center gap-3 text-xs flex-wrap">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 whitespace-nowrap flex-shrink-0">
+              <ShieldCheck className="w-4 h-4 flex-shrink-0" />
+              <span className="font-semibold whitespace-nowrap">Exact Match: 98.2%</span>
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
-              <Zap className="w-4 h-4" />
-              <span className="font-semibold">Latency Drop: 97.8%</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 whitespace-nowrap flex-shrink-0">
+              <Zap className="w-4 h-4 flex-shrink-0" />
+              <span className="font-semibold whitespace-nowrap">Latency Drop: 97.8%</span>
             </div>
           </div>
         </div>

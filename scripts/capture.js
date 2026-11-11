@@ -62,6 +62,20 @@ async function main() {
     console.log(`Saved mobile screenshot: ${mTab.filename}`);
   }
 
+  // Also capture opened mobile navigation drawer
+  try {
+    const menuBtn = await page.$('button[aria-label="Toggle navigation menu"]');
+    if (menuBtn) {
+      await menuBtn.click();
+      await new Promise(r => setTimeout(r, 400));
+      const menuOutPath = path.join(imagesDir, 'distillforge_mobile_menu.png');
+      await page.screenshot({ path: menuOutPath, fullPage: false });
+      console.log('Saved mobile menu screenshot: distillforge_mobile_menu.png');
+    }
+  } catch (err) {
+    console.warn('Could not capture mobile menu:', err);
+  }
+
   await browser.close();
   console.log('All real screenshots captured successfully!');
 }
