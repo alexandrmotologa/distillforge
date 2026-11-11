@@ -100,12 +100,19 @@ func (pm *ProcessMonitor) StartAndStream(ctx context.Context, jobID string) erro
 		errChan <- scanner.Err()
 	}()
 
-	waitErr := pm.cmd.Wait()
-	_ = <-errChan
-	_ = <-errChan
+	// Wait for stdout and stderr reader goroutines to finish before calling Wait
+	err1 := <-errChan
+	err2 := <-errChan
 
+	waitErr := pm.cmd.Wait()
 	if waitErr != nil {
 		return fmt.Errorf("training process exited with error: %w", waitErr)
+	}
+	if err1 != nil {
+		return err1
+	}
+	if err2 != nil {
+		return err2
 	}
 
 	return nil

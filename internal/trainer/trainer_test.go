@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 
 	"github.com/alexandrmotologa/distillforge/internal/config"
@@ -51,15 +52,20 @@ func TestTrainerSimulation(t *testing.T) {
 
 	trainer := NewPipelineTrainer(cfg, st)
 
+	var mu sync.Mutex
 	var recordedMetrics []*store.TrainingMetric
 	var logs []string
 
 	err = trainer.Train(context.Background(), job.ID, datasetPath, outputDir, true,
 		func(m *store.TrainingMetric) {
+			mu.Lock()
 			recordedMetrics = append(recordedMetrics, m)
+			mu.Unlock()
 		},
 		func(line string) {
+			mu.Lock()
 			logs = append(logs, line)
+			mu.Unlock()
 		},
 	)
 	if err != nil {

@@ -9,7 +9,27 @@ import { ROISummaryCard } from './components/ROISummaryCard'
 import { Playground } from './components/Playground'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const getInitialTab = () => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const tabParam = params.get('tab')
+      if (tabParam) return tabParam
+      const hash = window.location.hash.replace('#', '')
+      if (hash) return hash
+    }
+    return 'dashboard'
+  }
+
+  const [activeTab, setActiveTabState] = useState(getInitialTab)
+
+  const setActiveTab = (tab: string) => {
+    setActiveTabState(tab)
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      url.searchParams.set('tab', tab)
+      window.history.replaceState({}, '', url.toString())
+    }
+  }
   const [pipelineRunning, setPipelineRunning] = useState(false)
   const [currentJob, setCurrentJob] = useState<any>(null)
   const [metrics, setMetrics] = useState<any[]>([])

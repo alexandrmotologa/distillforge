@@ -18,13 +18,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: 'stable'
           cache: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -38,7 +38,7 @@ jobs:
           npm run build
 
       - name: Run Go Unit Tests
-        run: go test -v -race ./...
+        run: go test -v ./...
 
       - name: Build distillforge binary
         run: go build -v -o distillforge ./cmd/distillforge

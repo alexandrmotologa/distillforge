@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+"""
+generate_logo.py - Generates the distillforge Peregrine Falcon brand identity
+Refined according to developer-branding visual inspection rules:
+- Unmistakable avian raptor beak: prominent titanium/amber raptor hook pointing down
+- High-speed aerodynamic falcon crest and brow
+- Delta wings filling 85% of hexagonal frame
+- Luxury squircle container, watertight base, zero AI slop
+"""
+
+import os
+import subprocess
+
+def create_falcon_svg():
+    svg = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="sqBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="cyanEye" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#00f5ff"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="beakAmber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="60%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="coreGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#3730a3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 1. Luxury White Squircle Container -->
+  <rect x="32" y="32" width="960" height="960" rx="220" fill="url(#sqBg)" stroke="#e2e8f0" stroke-width="6"/>
+
+  <!-- Concentric Tech Guidance Rings -->
+  <circle cx="512" cy="512" r="395" fill="none" stroke="#f1f5f9" stroke-width="4"/>
+  <circle cx="512" cy="512" r="418" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="8 8"/>
+
+  <!-- 2. Massive Hexagonal Gateway Frame -->
+  <polygon points="512,124 848,318 848,706 512,900 176,706 176,318" 
+           fill="none" stroke="#0f172a" stroke-width="36" stroke-linejoin="round"/>
+
+  <!-- Inner Cyan Tech Accent Hexagon -->
+  <polygon points="512,154 824,332 824,692 512,870 200,692 200,332" 
+           fill="none" stroke="#6366f1" stroke-width="4" stroke-dasharray="16 10" opacity="0.6"/>
+
+  <!-- Corner Anchor Nodes -->
+  <circle cx="512" cy="124" r="9" fill="#00f5ff"/>
+  <circle cx="848" cy="318" r="9" fill="#00f5ff"/>
+  <circle cx="848" cy="706" r="9" fill="#00f5ff"/>
+  <circle cx="512" cy="900" r="9" fill="#00f5ff"/>
+  <circle cx="176" cy="706" r="9" fill="#00f5ff"/>
+  <circle cx="176" cy="318" r="9" fill="#00f5ff"/>
+
+  <!-- 3. Watertight Solid Falcon Silhouette -->
+  <path d="M 512 170
+           L 590 220 L 670 260 L 760 300 L 810 370 L 780 460 L 710 560 L 640 670 L 580 770 L 512 840
+           L 444 770 L 384 670 L 314 560 L 244 460 L 214 370 L 264 300 L 354 260 L 434 220 Z"
+        fill="#0b0f19"/>
+
+  <!-- 4. Low-Poly Peregrine Falcon Geometry -->
+
+  <!-- A. Swept Delta Wings (Dynamic strike vectors) -->
+  <polygon points="214,370 264,300 354,340 310,430" fill="#1e293b"/>
+  <polygon points="264,300 354,260 410,320 354,340" fill="#334155"/>
+  <polygon points="214,370 310,430 330,510 244,460" fill="#0f172a"/>
+  <polygon points="310,430 400,430 380,520 330,510" fill="#1e293b"/>
+  <polygon points="244,460 330,510 350,600 314,560" fill="#0f172a"/>
+  <polygon points="330,510 420,530 400,610 350,600" fill="#1e293b"/>
+
+  <polygon points="810,370 760,300 670,340 714,430" fill="#334155"/>
+  <polygon points="760,300 670,260 614,320 670,340" fill="#475569"/>
+  <polygon points="810,370 714,430 694,510 780,460" fill="#1e293b"/>
+  <polygon points="714,430 624,430 644,520 694,510" fill="#334155"/>
+  <polygon points="780,460 694,510 674,600 710,560" fill="#1e293b"/>
+  <polygon points="694,510 604,530 624,610 674,600" fill="#334155"/>
+
+  <!-- B. Falcon Crown & Aerodynamic Crest -->
+  <polygon points="512,170 434,220 512,270" fill="#334155"/>
+  <polygon points="512,170 512,270 590,220" fill="#475569"/>
+  <polygon points="434,220 354,260 440,290" fill="#1e293b"/>
+  <polygon points="590,220 584,290 670,260" fill="#334155"/>
+  <polygon points="434,220 440,290 512,270" fill="#334155"/>
+  <polygon points="590,220 512,270 584,290" fill="#475569"/>
+
+  <!-- C. Sharp Raptor Brow (Fierce V-Angle) -->
+  <polygon points="512,270 440,290 512,320" fill="#475569"/>
+  <polygon points="512,270 512,320 584,290" fill="#64748b"/>
+  <polygon points="440,290 410,320 512,320" fill="#1e293b"/>
+  <polygon points="584,290 512,320 614,320" fill="#334155"/>
+
+  <!-- D. Predatory Raptor Eyes (Electric Cyan Optics) -->
+  <!-- Left Eye -->
+  <polygon points="410,320 465,325 450,370 390,355" fill="#0f172a"/>
+  <polygon points="405,328 458,332 446,362 412,354" fill="url(#cyanEye)"/>
+  <polygon points="422,332 444,335 438,352 426,348" fill="#ffffff"/>
+
+  <!-- Right Eye -->
+  <polygon points="559,325 614,320 634,355 574,370" fill="#1e293b"/>
+  <polygon points="566,332 619,328 612,354 578,362" fill="url(#cyanEye)"/>
+  <polygon points="580,335 602,332 598,348 586,352" fill="#ffffff"/>
+
+  <!-- E. Prominent Hooked Raptor Beak (Gold / Amber Cere with Obsidian Hook) -->
+  <!-- Upper Golden Cere -->
+  <polygon points="512,320 465,350 512,380" fill="#f59e0b"/>
+  <polygon points="512,320 512,380 559,350" fill="#fbbf24"/>
+  <!-- Hooked Beak Main Body -->
+  <polygon points="512,380 470,440 512,500" fill="#d97706"/>
+  <polygon points="512,380 512,500 554,440" fill="#f59e0b"/>
+  <!-- Sharp Hook Tip Curves Down -->
+  <polygon points="512,500 488,565 512,590" fill="#1e293b"/>
+  <polygon points="512,500 512,590 536,565" fill="#334155"/>
+  <polygon points="512,590 502,620 512,635" fill="#0f172a"/>
+  <polygon points="512,590 512,635 522,620" fill="#0f172a"/>
+
+  <!-- F. Facial Feathers & Malar Raptor Markings -->
+  <polygon points="390,355 450,370 435,460 370,430" fill="#1e293b"/>
+  <polygon points="634,355 574,370 589,460 654,430" fill="#334155"/>
+  <polygon points="435,460 470,500 425,540 370,500" fill="#0f172a"/>
+  <polygon points="589,460 554,500 599,540 654,500" fill="#1e293b"/>
+
+  <!-- G. Breast Armor Chevrons (Distillation Compression Matrix) -->
+  <polygon points="425,540 512,500 512,640 430,620" fill="#1e293b"/>
+  <polygon points="599,540 512,500 512,640 594,620" fill="#334155"/>
+  <polygon points="430,620 512,640 512,720 420,670" fill="#334155"/>
+  <polygon points="594,620 512,640 512,720 604,670" fill="#475569"/>
+
+  <!-- H. Distillation Core Gem -->
+  <polygon points="512,650 475,700 512,750 549,700" fill="url(#coreGlow)"/>
+  <polygon points="512,650 512,750 549,700" fill="#818cf8"/>
+  <polygon points="512,670 490,700 512,730 534,700" fill="#00f5ff" opacity="0.9"/>
+
+  <!-- I. Tail Flank Taper -->
+  <polygon points="420,670 512,720 512,800 410,740" fill="#1e293b"/>
+  <polygon points="604,670 512,720 512,800 614,740" fill="#334155"/>
+  <polygon points="410,740 512,800 512,835 440,815" fill="#0f172a"/>
+  <polygon points="614,740 512,800 512,835 584,815" fill="#1e293b"/>
+
+  <!-- Telemetry Nodes -->
+  <circle cx="512" cy="750" r="5" fill="#00f5ff"/>
+  <circle cx="475" cy="700" r="4" fill="#a5b4fc"/>
+  <circle cx="549" cy="700" r="4" fill="#a5b4fc"/>
+</svg>
+'''
+    return svg
+
+def main():
+    svg_content = create_falcon_svg()
+    svg_path = "docs/images/distillforge_logo.svg"
+    png_path = "docs/images/distillforge_logo.png"
+
+    with open(svg_path, "w", encoding="utf-8") as f:
+        f.write(svg_content)
+    print(f"Generated SVG: {svg_path}")
+
+    chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+    abs_svg = os.path.abspath(svg_path)
+    file_url = "file:///" + abs_svg.replace("\\", "/")
+
+    cmd = [
+        chrome_path,
+        "--headless",
+        "--disable-gpu",
+        "--screenshot=" + os.path.abspath(png_path),
+        "--window-size=1024,1024",
+        "--default-background-color=00000000",
+        file_url
+    ]
+    subprocess.run(cmd, check=True)
+    print(f"Rendered PNG: {png_path} (1024x1024)")
+
+if __name__ == "__main__":
+    main()

@@ -111,9 +111,9 @@ export const DatasetInspector: React.FC<DatasetInspectorProps> = ({ samples: ini
 
     try {
       await fetch('/api/samples/bulk', {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids, is_accepted: isAccepted }),
+        body: JSON.stringify({ ids, action: isAccepted ? 'accept' : 'reject' }),
       })
 
       setSamples((prev) =>
@@ -133,9 +133,9 @@ export const DatasetInspector: React.FC<DatasetInspectorProps> = ({ samples: ini
 
     try {
       await fetch('/api/samples/bulk', {
-        method: 'DELETE',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids }),
+        body: JSON.stringify({ ids, action: 'delete' }),
       })
 
       setSamples((prev) => prev.filter((s) => !ids.includes(s.id)))
