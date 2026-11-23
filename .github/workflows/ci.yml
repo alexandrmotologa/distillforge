@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
 
@@ -42,3 +43,11 @@ jobs:
 
       - name: Build distillforge binary
         run: go build -v -o distillforge ./cmd/distillforge
+
+      - name: Verify CLI Version & Help Flags
+        run: |
+          ./distillforge --version
+          ./distillforge -v
+          ./distillforge -V
+          ./distillforge version
+          ./distillforge --help

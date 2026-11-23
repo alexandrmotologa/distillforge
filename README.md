@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/alexandrmotologa/distillforge/actions/workflows/ci.yml"><img src="https://github.com/alexandrmotologa/distillforge/actions/workflows/ci.yml/badge.svg" alt="CI Status" /></a>
+  <a href="https://github.com/alexandrmotologa/distillforge/releases"><img src="https://img.shields.io/github/v/release/alexandrmotologa/distillforge?color=blue" alt="Release" /></a>
   <a href="#license"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
   <a href="#go"><img src="https://img.shields.io/badge/go-1.26+-00ADD8.svg" alt="Go Version" /></a>
   <a href="#react"><img src="https://img.shields.io/badge/react-19-61DAFB.svg" alt="React 19" /></a>

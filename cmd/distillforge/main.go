@@ -37,9 +37,18 @@ var (
 )
 
 func main() {
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "version", "--version", "-v", "-V":
+			fmt.Println("distillforge v1.0.0")
+			return
+		}
+	}
+
 	rootCmd := &cobra.Command{
-		Use:   "distillforge",
-		Short: "Turnkey LLM-to-SLM Distillation, Synthetic Data Pipeline & Edge Fine-Tuning Studio",
+		Use:     "distillforge",
+		Version: "1.0.0",
+		Short:   "Turnkey LLM-to-SLM Distillation, Synthetic Data Pipeline & Edge Fine-Tuning Studio",
 		Long: `distillforge automates the complete distillation lifecycle:
 generating synthetic domain datasets with Evol-Instruct, filtering via LLM-as-a-judge,
 fine-tuning 1B to 3B models with LoRA/QLoRA, and exporting to quantized GGUF & Ollama.`,
@@ -146,7 +155,15 @@ fine-tuning 1B to 3B models with LoRA/QLoRA, and exporting to quantized GGUF & O
 	quantsCmd.Flags().StringVarP(&outputPath, "output", "o", "./dist/quants", "Output directory for quant variants")
 	quantsCmd.Flags().BoolVar(&simulation, "simulation", false, "Force simulation mode for testing")
 
-	rootCmd.AddCommand(studioCmd, genCmd, auditCmd, trainCmd, evalCmd, exportCmd, runCmd, serveCmd, reportCmd, adviseCmd, quantsCmd)
+	versionCmd := &cobra.Command{
+		Use:   "version",
+		Short: "Print application version",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("distillforge v1.0.0")
+		},
+	}
+
+	rootCmd.AddCommand(studioCmd, genCmd, auditCmd, trainCmd, evalCmd, exportCmd, runCmd, serveCmd, reportCmd, adviseCmd, quantsCmd, versionCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
